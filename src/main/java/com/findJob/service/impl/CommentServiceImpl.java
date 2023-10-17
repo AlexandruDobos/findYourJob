@@ -32,6 +32,7 @@ public class CommentServiceImpl implements CommentService {
     private ModelMapper modelMapper;
 
     public CommentServiceImpl(CommentRepository commentRepository, UserRepository userRepository, JobRepository jobRepository, ModelMapper modelMapper) {
+
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.jobRepository = jobRepository;
@@ -44,10 +45,10 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = modelMapper.map(commentDTO, Comment.class);
 
         Optional<Job> jobOptional = jobRepository.findById(jobId);
-        Job job = jobOptional.orElseThrow(()-> new NotFoundException("Job not found!"));
+        Job job = jobOptional.orElseThrow(() -> new NotFoundException("Job not found!"));
 
         Optional<User> userOptional = userRepository.findById(userId);
-        User user = userOptional.orElseThrow(()-> new NotFoundException("User not found!"));
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User not found!"));
 
         comment.setDate(LocalDate.now());
         comment.setReports(0);
@@ -61,6 +62,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO getComment(Integer commentId) throws NotFoundException {
+
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
         Comment comment = commentOptional.orElseThrow(() -> new NotFoundException("Not found!"));
 
@@ -69,6 +71,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<CommentDTO> getAllCommentsReported() throws NotFoundException {
+
         List<Comment> commentList = commentRepository.getAllCommentReported();
         List<CommentDTO> commentDTOList = new ArrayList<>();
 
@@ -81,13 +84,14 @@ public class CommentServiceImpl implements CommentService {
             for (Integer i : c.getUserReportList()) {
 
                 Optional<User> userOptional = userRepository.findById(i);
-                User user = userOptional.orElseThrow(()->new NotFoundException("User not found!"));
-                userDTOS.add(modelMapper.map(user,UserDTO.class));
+                User user = userOptional.orElseThrow(() -> new NotFoundException("User not found!"));
+                userDTOS.add(modelMapper.map(user, UserDTO.class));
             }
             commentDTO.setUserReportList(userDTOS);
 
             commentDTOList.add(commentDTO);
         }
+
         return commentDTOList;
     }
 
@@ -97,8 +101,8 @@ public class CommentServiceImpl implements CommentService {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
         Comment comment = commentOptional.orElseThrow(() -> new NotFoundException("Not found!"));
 
-        comment.setReports(comment.getReports()+1);
-        if(comment.getUserReportList().contains(commentId))
+        comment.setReports(comment.getReports() + 1);
+        if (comment.getUserReportList().contains(commentId))
             throw new NotFoundException("This comment has already been reported!");
         else comment.getUserReportList().add(commentId);
 
@@ -107,10 +111,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO updateComment(Integer commentId, CommentDTO commentDTO) throws NotFoundException {
+
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
         Comment comment = commentOptional.orElseThrow(() -> new NotFoundException("Not found!"));
 
-        if(commentDTO.getText() != null)
+        if (commentDTO.getText() != null)
             comment.setText(commentDTO.getText());
 
         return modelMapper.map(comment, CommentDTO.class);
@@ -118,15 +123,16 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO deleteComment(Integer commentId, Integer userId, Integer jobId) throws NotFoundException, BadRequestException {
+
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
         Comment comment = commentOptional.orElseThrow(() -> new NotFoundException("Not found!"));
 
         Optional<User> userOptional = userRepository.findById(userId);
-        User user = userOptional.orElseThrow(()-> new NotFoundException("User not found!"));
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User not found!"));
 
-        if(comment.getUser()==user){
+        if (comment.getUser() == user) {
             Optional<Job> jobOptional = jobRepository.findById(jobId);
-            Job job = jobOptional.orElseThrow(()-> new NotFoundException("Job not found"));
+            Job job = jobOptional.orElseThrow(() -> new NotFoundException("Job not found"));
 
             job.getComments().remove(comment);
             commentRepository.delete(comment);

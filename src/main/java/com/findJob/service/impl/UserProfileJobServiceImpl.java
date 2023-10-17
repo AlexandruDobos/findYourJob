@@ -28,8 +28,8 @@ public class UserProfileJobServiceImpl implements UserProfileJobService {
     private JobRepository jobRepository;
     private ModelMapper modelMapper;
 
-
     public UserProfileJobServiceImpl(UserProfileJobRepository userProfileJobRepository, UserProfileRepository userProfileRepository, JobRepository jobRepository, ModelMapper modelMapper) {
+
         this.userProfileJobRepository = userProfileJobRepository;
         this.userProfileRepository = userProfileRepository;
         this.jobRepository = jobRepository;
@@ -52,6 +52,7 @@ public class UserProfileJobServiceImpl implements UserProfileJobService {
 
     @Override
     public void acceptInterview(Integer userProfileId, Integer jobId) throws NotFoundException {
+
         Optional<UserProfile> userProfileOptional = userProfileRepository.findById(userProfileId);
         UserProfile userProfile = userProfileOptional.orElseThrow(() -> new NotFoundException("Profile not found!"));
 
@@ -63,6 +64,7 @@ public class UserProfileJobServiceImpl implements UserProfileJobService {
 
     @Override
     public List<UserProfileJobDTO> getInterviewsForEmployer(Integer jobId) throws NotFoundException {
+
         Optional<Job> jobOptional = jobRepository.findById(jobId);
         Job job = jobOptional.orElseThrow(() -> new NotFoundException("Job not found!"));
 
@@ -71,11 +73,13 @@ public class UserProfileJobServiceImpl implements UserProfileJobService {
         for (UserProfileJob u : userProfileJobList) {
             userProfileJobDTOList.add(this.modelMapper.map(u, UserProfileJobDTO.class));
         }
+
         return userProfileJobDTOList;
     }
 
     @Override
     public List<UserProfileJobDTO> getInterviewsForUser(Integer userProfileId) throws NotFoundException {
+
         Optional<UserProfile> userProfileOptional = userProfileRepository.findById(userProfileId);
         UserProfile userProfile = userProfileOptional.orElseThrow(() -> new NotFoundException("UserProfile not found!"));
 
@@ -84,6 +88,7 @@ public class UserProfileJobServiceImpl implements UserProfileJobService {
         for (UserProfileJob u : userProfileJobList) {
             userProfileJobDTOList.add(this.modelMapper.map(u, UserProfileJobDTO.class));
         }
+
         return userProfileJobDTOList;
     }
 }

@@ -5,18 +5,15 @@ import com.findJob.dto.UserDTO;
 import com.findJob.entity.EmployerProfile;
 import com.findJob.entity.Feedback;
 import com.findJob.entity.User;
-import com.findJob.entity.UserProfile;
 import com.findJob.exception.BadRequestException;
 import com.findJob.exception.NotFoundException;
 import com.findJob.repository.EmployerProfileRepository;
 import com.findJob.repository.FeedbackRepository;
 import com.findJob.repository.UserRepository;
-import com.findJob.service.EmployerProfileService;
 import com.findJob.service.FeedbackService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -27,9 +24,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     private FeedbackRepository feedbackRepository;
     private ModelMapper modelMapper;
-
     private UserRepository userRepository;
-
     private EmployerProfileRepository employerProfileRepository;
 
     public FeedbackServiceImpl(FeedbackRepository feedbackRepository, ModelMapper modelMapper, UserRepository userRepository, EmployerProfileRepository employerProfileRepository) {
@@ -46,10 +41,10 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = modelMapper.map(feedbackDTO, Feedback.class);
 
         Optional<User> userOptional = userRepository.findById(userId);
-        User user = userOptional.orElseThrow(()-> new NotFoundException("User not found!"));
+        User user = userOptional.orElseThrow(() -> new NotFoundException("User not found!"));
 
         Optional<EmployerProfile> employerProfileOptional = employerProfileRepository.findById(employerProfileId);
-        EmployerProfile employerProfile = employerProfileOptional.orElseThrow(()-> new NotFoundException("Profile not found!"));
+        EmployerProfile employerProfile = employerProfileOptional.orElseThrow(() -> new NotFoundException("Profile not found!"));
 
         feedback.setDate(LocalDate.now());
         feedback.setReports(0);
@@ -87,8 +82,8 @@ public class FeedbackServiceImpl implements FeedbackService {
             for (Integer i : f.getUserReportList()) {
 
                 Optional<User> userOptional = userRepository.findById(i);
-                User user = userOptional.orElseThrow(()->new NotFoundException("User not found!"));
-                userDTOS.add(modelMapper.map(user,UserDTO.class));
+                User user = userOptional.orElseThrow(() -> new NotFoundException("User not found!"));
+                userDTOS.add(modelMapper.map(user, UserDTO.class));
             }
             feedbackDTO.setUserReportList(userDTOS);
 
@@ -119,8 +114,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         Optional<Feedback> feedbackOptional = feedbackRepository.findById(feedbackId);
         Feedback feedback = feedbackOptional.orElseThrow(() -> new NotFoundException("Not found!"));
 
-        if(feedbackDTO.getDescription() != null) feedback.setDescription(feedbackDTO.getDescription());
-        if(feedbackDTO.getStars() != null) feedback.setStars(feedbackDTO.getStars());
+        if (feedbackDTO.getDescription() != null) feedback.setDescription(feedbackDTO.getDescription());
+        if (feedbackDTO.getStars() != null) feedback.setStars(feedbackDTO.getStars());
 
         return modelMapper.map(feedback, FeedbackDTO.class);
     }
@@ -134,7 +129,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Optional<User> userOptional = userRepository.findById(userId);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User Not found!"));
 
-        if(feedback.getUser()==user) {
+        if (feedback.getUser() == user) {
 
             Optional<EmployerProfile> employerProfileOptional = employerProfileRepository.findById(employerProfileId);
             EmployerProfile employerProfile = employerProfileOptional.orElseThrow(() -> new NotFoundException("Profile not found!"));

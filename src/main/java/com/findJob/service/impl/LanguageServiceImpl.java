@@ -18,12 +18,11 @@ import java.util.Optional;
 public class LanguageServiceImpl implements LanguageService {
 
     private LanguageRepository languageRepository;
-
     private ModelMapper modelMapper;
-
     private UserProfileRepository userProfileRepository;
 
     public LanguageServiceImpl(LanguageRepository languageRepository, ModelMapper modelMapper, UserProfileRepository userProfileRepository) {
+
         this.languageRepository = languageRepository;
         this.modelMapper = modelMapper;
         this.userProfileRepository = userProfileRepository;
@@ -33,7 +32,7 @@ public class LanguageServiceImpl implements LanguageService {
     public LanguageDTO createLanguage(Integer userProfileId, LanguageDTO languageDTO) throws NotFoundException {
 
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findById(userProfileId);
-        UserProfile userProfile = optionalUserProfile.orElseThrow(()-> new NotFoundException("Profile not found!"));
+        UserProfile userProfile = optionalUserProfile.orElseThrow(() -> new NotFoundException("Profile not found!"));
 
         Language language = modelMapper.map(languageDTO, Language.class);
         languageRepository.save(language);
@@ -68,7 +67,7 @@ public class LanguageServiceImpl implements LanguageService {
     public LanguageDTO deleteLanguage(Integer userProfileId, Integer languageId) throws NotFoundException {
 
         Optional<UserProfile> optionalUserProfile = userProfileRepository.findById(userProfileId);
-        UserProfile userProfile = optionalUserProfile.orElseThrow(()-> new NotFoundException("Profile not found!"));
+        UserProfile userProfile = optionalUserProfile.orElseThrow(() -> new NotFoundException("Profile not found!"));
 
         Optional<Language> languageOptional = languageRepository.findById(languageId);
         Language language = languageOptional.orElseThrow(() -> new NotFoundException("Language Not found!"));

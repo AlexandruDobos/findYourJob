@@ -20,11 +20,10 @@ public class AdminController {
         this.adminService = adminService;
     }
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<AdminDTO> login(@RequestBody AdminDTO adminDTO) throws NotFoundException {
 
         AdminDTO admin = adminService.login(adminDTO);
         return new ResponseEntity<>(admin, HttpStatus.OK);
-
     }
 }

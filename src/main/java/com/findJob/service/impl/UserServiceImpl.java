@@ -22,18 +22,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-
     private ModelMapper modelMapper;
-
     private PasswordEncoder passwordEncoder;
 
-    private RestTemplate restTemplate;
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder) {
 
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, PasswordEncoder passwordEncoder, RestTemplate restTemplate) {
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
         this.passwordEncoder = passwordEncoder;
-        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -97,7 +93,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(userId);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User not found!"));
 
-        if(!user.getIsActive()) throw new BadRequestException("This account is disabled!");
+        if (!user.getIsActive()) throw new BadRequestException("This account is disabled!");
 
         return modelMapper.map(user, UserDTO.class);
     }
@@ -108,7 +104,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findById(userId);
         User user = userOptional.orElseThrow(() -> new NotFoundException("User not found!"));
 
-        if(!user.getIsActive()) throw new BadRequestException("This account is disabled!");
+        if (!user.getIsActive()) throw new BadRequestException("This account is disabled!");
 
         if (userDTO.getEmail() != null) {
 
@@ -130,7 +126,6 @@ public class UserServiceImpl implements UserService {
 
         return modelMapper.map(user, UserDTO.class);
     }
-
 
 
 }

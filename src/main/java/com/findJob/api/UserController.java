@@ -30,13 +30,12 @@ public class UserController {
 
     private EmployerProfileService employerProfileService;
 
-    private RestTemplate restTemplate;
 
-    public UserController(UserService userService, UserProfileService userProfileService, EmployerProfileService employerProfileService, RestTemplate restTemplate) {
+    public UserController(UserService userService, UserProfileService userProfileService, EmployerProfileService employerProfileService) {
+
         this.userService = userService;
         this.userProfileService = userProfileService;
         this.employerProfileService = employerProfileService;
-        this.restTemplate = restTemplate;
     }
 
     @PostMapping("/signUp")
@@ -44,11 +43,11 @@ public class UserController {
 
         UserDTO user = userService.createUser(userDTO);
 
-        if(user.getRole() == Role.USER) {
+        if (user.getRole() == Role.USER) {
 
             userProfileService.createUserProfile(user);
 
-        } else if(user.getRole() == Role.COMPANY) {
+        } else if (user.getRole() == Role.COMPANY) {
 
             employerProfileService.createEmployerProfile(user);
         }
@@ -73,10 +72,9 @@ public class UserController {
     @PatchMapping
     public ResponseEntity<UserDTO> updateUser(@RequestParam("user") Integer userId, @Valid @RequestBody UserDTO userDTO) throws BadRequestException, NotFoundException {
 
-        UserDTO user = userService.updateUser(userId,userDTO);
+        UserDTO user = userService.updateUser(userId, userDTO);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
-
 
 
 }
